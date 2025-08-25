@@ -20,14 +20,14 @@
 Add ArticleKit to your project through Xcode:
 
 1. Go to **File → Add Package Dependencies**
-2. Enter the repository URL: `https://github.com/yourusername/ArticleKit`
+2. Enter the repository URL: `https://github.com/codegw/ArticleKit`
 3. Select **Up to Next Major Version** and click **Add Package**
 
 Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/ArticleKit", from: "1.0.0")
+    .package(url: "https://github.com/codegw/ArticleKit", from: "1.0.0")
 ]
 ```
 
