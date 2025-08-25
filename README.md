@@ -51,7 +51,7 @@ struct ContentView: View {
         header: [
             .heroImage("hero-image"),
             .title("Welcome to ArticleKit"),
-            .author("John “Appleseed, bio: "iOS Developer", avatarImage: “john-avatar")
+            .author("John “Appleseed", bio: "iOS Developer", avatarImage: “john-avatar")
         ],
         content: [
             .heading("Getting Started"),
@@ -78,7 +78,7 @@ let jsonString = """
 {
   "header": [
     { "type": "title", "title": "My Article" },
-    { "type": "author", "author": { "name": "John Appleseed” } }
+    { "type": "author", "author": { "name": "John Appleseed" } }
   ],
   "content": [
     { "type": "body", "body": "Article content here..." }
@@ -141,6 +141,8 @@ let customStyle = ArticleStyle(
 ArticleView(article: article)
     .articleStyle(customStyle)
 ```
+
+> For best styling practices, follow the ArticleKit documentation
 
 ## JSON Format
 
