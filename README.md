@@ -192,11 +192,15 @@ ArticleKit uses a simple JSON format:
 
 ## Contributing
 
-Contributions are welcome! 
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## License
+
+ArticleKit is available under the MIT License. See [LICENSE](LICENSE) for details.
 
