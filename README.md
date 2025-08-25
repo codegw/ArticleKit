@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="200" height="200" src="assets/ArticleKit.png” alt=“ArticleKit logo">
+  <img width="200" height="200" src="assets/ArticleKit.png" alt= "ArticleKit logo">
   <h1>ArticleKit</h1>
   <p>
     A simple SwiftUI framework for creating rich and readable articles with customisable styling support.
