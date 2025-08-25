@@ -4,7 +4,14 @@
   <p>
     A simple SwiftUI framework for creating rich and readable articles with customisable styling support.
   </p>
+  <div align="center">
+    <img src="https://img.shields.io/badge/Swift-6.1-orange.svg" alt="Swift Version">
+    <img src="https://img.shields.io/badge/iOS-16.0+-blue.svg" alt="iOS Version">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+  </div>
 </div>
+
+--
 
 ## Features
 
