@@ -13,6 +13,10 @@
 
 ---
 
+## Overview
+
+ArticleKit helps you create clean and customisable article reading experiences in SwiftUI applications, for blogs, how-to guides, or in-app articles.
+
 ## Features
 
 - **Rich Content Blocks**: Support for text, images, quotes, code blocks, lists, and more
@@ -184,9 +188,7 @@ ArticleKit uses a simple JSON format:
         "caption": "Image caption"
       }
     }
-  ],
-  "date": "2024-08-25T10:30:00Z",
-  "topic": "Development"
+  ]
 }
 ```
 
