@@ -26,7 +26,7 @@ import SwiftUI
 /// )
 /// ```
 
-public struct ArticleStyle: Sendable{
+public struct ArticleStyle: Sendable {
     /// Color theme configuration for the article
     public var theme: ArticleTheme
     
@@ -74,7 +74,7 @@ public struct ArticleStyle: Sendable{
 /// Each style defines fonts for titles, headings, body text, and captions.
 /// Defines the font options for text within articles
 
-public enum FontStyle: Sendable{
+public enum FontStyle : Sendable{
     case serif
     case sansSerif
     case expanded
@@ -129,7 +129,7 @@ public enum FontStyle: Sendable{
 ///
 /// Provides specific font definitions for different text hierarchy levels.
 /// A custom option allows you to configure different levels of typography.
-public struct FontStyleConfiguration: Sendable{
+public struct FontStyleConfiguration : Sendable{
     /// Primary font for article titles
     public let titleFont: Font
     
@@ -155,8 +155,8 @@ public struct FontStyleConfiguration: Sendable{
 /// Styling options for hero images displayed in article headers
 ///
 /// Controls how header images are presented, including corner radius, padding, and fallback appearance when images are unavailable.
-
-public enum HeaderImageStyle: Sendable{
+@MainActor
+public enum HeaderImageStyle {
     case classic
     case modern
     
@@ -220,8 +220,8 @@ public enum HeaderImageStyle: Sendable{
 /// Styling options for content images within article bodies
 ///
 /// Controls the presentation of images embedded in article content, including caption styling and fallback appearance.
-
-public enum ImageStyle: Sendable{
+@MainActor
+public enum ImageStyle {
     case classic
     case modern
     
@@ -310,8 +310,8 @@ public enum ImageStyle: Sendable{
 /// Styling options for author elements within the article
 ///
 /// Controls the presentation of author information, with choice from the name, or bio and profile image
-
-public enum AuthorStyle: Sendable {
+@MainActor
+public enum AuthorStyle {
     case minimal
     case classic
     case detail
@@ -418,8 +418,7 @@ private struct AuthorBlock: View {
 /// Other themes are additionally provided for your control, such as sepia and midnight
 ///
 /// - Important: Before using a custom theme, **always check WCAG compliance.**
-
-public struct ArticleThemeConfiguration: Sendable {
+public struct ArticleThemeConfiguration: Sendable{
     public let backgroundColor: Color
     public let textColor: Color
     public let accentColor: Color
@@ -509,6 +508,7 @@ public enum ArticleTheme: Sendable{
 // MARK: - Pre-defined Styles
 
 /// Created pre-defined styles for easy theming
+
 public extension ArticleStyle {
     static let classic = ArticleStyle(
         theme: .dynamic,

@@ -59,7 +59,7 @@ import Foundation
 ///     .articleStyle(.modern)  // Apply modern styling
 /// ```
 
-public struct Article: Identifiable, Hashable, Codable {
+public struct Article: Identifiable, Hashable, Codable, Sendable{
     public let id: UUID
     
     /// Header content including title, subtitle, author, hero image, and metadata
@@ -169,7 +169,7 @@ public struct Article: Identifiable, Hashable, Codable {
 /// Wrapper for header blocks that provides stable identity for SwiftUI rendering
 ///
 /// This wrapper ensures each header block has a unique, stable identifier that persists across SwiftUI view updates, preventing unnecessary re-renders.
-public struct HeaderContent: Identifiable, Hashable, Codable {
+public struct HeaderContent: Identifiable, Hashable, Codable, Sendable {
     public let id: UUID
     public let block: HeaderBlock
     
@@ -191,7 +191,7 @@ public struct HeaderContent: Identifiable, Hashable, Codable {
 /// Wrapper for article blocks that provides stable identity for SwiftUI rendering
 ///
 /// This wrapper ensures each article block has a unique, stable identifier that persists across SwiftUI view updates, preventing unnecessary re-renders.
-public struct ArticleContent: Identifiable, Hashable, Codable {
+public struct ArticleContent: Identifiable, Hashable, Codable, Sendable {
     public let id: UUID
     public let block: ArticleBlock
     
@@ -214,7 +214,7 @@ public struct ArticleContent: Identifiable, Hashable, Codable {
 /// Defines the types of content blocks available for article headers
 ///
 /// Header blocks appear at the top of an article and typically contain metadata, titles, author information, and introductory elements.
-public enum HeaderBlock: Hashable, Codable {
+public enum HeaderBlock: Hashable, Codable, Sendable {
     /// A hero image displayed prominently at the article top
     /// - Parameter imageName: The name of the image asset to display
     case heroImage(String)
@@ -246,7 +246,7 @@ public enum HeaderBlock: Hashable, Codable {
 /// Defines the types of content blocks available for article body content
 ///
 /// Content blocks make up the main body of an article and support various content types including text, images, lists, quotes, and code.
-public enum ArticleBlock: Hashable, Codable {
+public enum ArticleBlock: Hashable, Codable, Sendable {
     /// A section heading within the article
     /// - Parameter text: The heading text to display
     case heading(String)
