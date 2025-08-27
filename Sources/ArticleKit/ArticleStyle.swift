@@ -198,7 +198,8 @@ public enum HeaderImageStyle {
                 .overlay(
                     Image(systemName: "photo")
                         .font(.largeTitle)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
+                        
                 )
                 .accessibilityLabel("Article hero image unavailable")
         case .classic:
@@ -208,7 +209,7 @@ public enum HeaderImageStyle {
                 .overlay(
                     Image(systemName: "photo")
                         .font(.largeTitle)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 )
                 .accessibilityLabel("Article hero image unavailable")
         }
@@ -262,11 +263,11 @@ private struct ImageBlock: View {
                 if let caption = caption {
                     ZStack {
                         Rectangle()
-                            .fill(.thickMaterial)
+                            .foregroundStyle(colors.cardBackground)
                         Text(caption)
                             .font(fonts.captionFont)
                             .fontWeight(.semibold)
-                            .foregroundColor(colors.secondaryColor)
+                            .foregroundStyle(colors.secondaryColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                     }
@@ -289,7 +290,7 @@ private struct ImageBlock: View {
                 if let caption = caption {
                     Text(caption)
                         .font(fonts.captionFont)
-                        .foregroundColor(colors.secondaryColor)
+                        .foregroundStyle(colors.secondaryColor)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
@@ -319,14 +320,14 @@ private struct ImageFallbackBlock: View {
                 .overlay(
                     Image(systemName: "photo")
                         .font(.largeTitle)
-                        .foregroundColor(colors.textColor)
+                        .foregroundStyle(colors.textColor)
                 )
                 .accessibilityLabel("Image '\(imageName)' not available")
             
             if let caption = caption {
                 Text(caption)
                     .font(fonts.captionFont)
-                    .foregroundColor(colors.secondaryColor)
+                    .foregroundStyle(colors.secondaryColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
@@ -372,7 +373,7 @@ private struct AuthorBlock: View {
             if let author = author {
                 Text(author)
                     .font(fonts.captionFont)
-                    .foregroundColor(colors.secondaryColor)
+                    .foregroundStyle(colors.secondaryColor)
                     .accessibilityLabel("Author: \(author)")
                     .accessibilityAddTraits(.isStaticText)
             }
@@ -386,7 +387,7 @@ private struct AuthorBlock: View {
                 if let author = author {
                     Text(author)
                         .font(fonts.bodyFont.weight(.medium))
-                        .foregroundColor(colors.secondaryColor)
+                        .foregroundStyle(colors.secondaryColor)
                         .accessibilityLabel("Author: \(author)")
                 }
             }
@@ -402,14 +403,14 @@ private struct AuthorBlock: View {
                     if let author = author {
                         Text(author)
                             .font(fonts.bodyFont.weight(.medium))
-                            .foregroundColor(colors.textColor)
+                            .foregroundStyle(colors.textColor)
                             .accessibilityLabel("Author: \(author)")
                     }
                     
                     if let bio = bio {
                         Text(bio)
                             .font(fonts.captionFont)
-                            .foregroundColor(colors.secondaryColor)
+                            .foregroundStyle(colors.secondaryColor)
                             .accessibilityLabel("Author bio: \(bio)")
                     }
                 }
@@ -434,7 +435,7 @@ private struct AuthorBlock: View {
                 .overlay(
                     Image(systemName: "person.fill")
                         .font(.system(size: size * 0.6))
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 )
                 .accessibilityLabel("Author profile picture placeholder")
         }

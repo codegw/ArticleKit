@@ -81,7 +81,7 @@ struct HeaderBlockView: View {
             case .title(let text):
                 Text(text)
                     .font(style.fontStyle.configuration.titleFont)
-                    .foregroundColor(style.theme.configuration.textColor)
+                    .foregroundStyle(style.theme.configuration.textColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .accessibilityAddTraits(.isHeader)
@@ -89,7 +89,7 @@ struct HeaderBlockView: View {
             case .subtitle(let text):
                 Text(text)
                     .font(style.fontStyle.configuration.bodyFont)
-                    .foregroundColor(style.theme.configuration.secondaryColor)
+                    .foregroundStyle(style.theme.configuration.secondaryColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .accessibilityLabel("Subtitle: \(text)")
@@ -130,7 +130,7 @@ struct ArticleBlockView: View {
         case .heading(let text):
             Text(text)
                 .font(style.fontStyle.configuration.headingFont)
-                .foregroundColor(style.theme.configuration.textColor)
+                .foregroundStyle(style.theme.configuration.textColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
                 .accessibilityAddTraits(.isHeader)
@@ -138,7 +138,7 @@ struct ArticleBlockView: View {
         case .body(let text):
             Text(text)
                 .font(style.fontStyle.configuration.bodyFont)
-                .foregroundColor(style.theme.configuration.textColor)
+                .foregroundStyle(style.theme.configuration.textColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
                 .accessibilityAddTraits(.isStaticText)
@@ -199,7 +199,7 @@ struct DateView: View {
     var body: some View {
         Text(formatDate(date))
             .font(style.fontStyle.configuration.captionFont)
-            .foregroundColor(style.theme.configuration.secondaryColor)
+            .foregroundStyle(style.theme.configuration.secondaryColor)
             .padding(.vertical, 4)
             .accessibilityLabel("Published on \(formatDate(date))")
             .accessibilityAddTraits(.isStaticText)
@@ -228,7 +228,7 @@ struct TopicsView: View {
                         Text(topic.uppercased())
                             .font(style.fontStyle.configuration.captionFont)
                             .fontWeight(.bold)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background {
@@ -291,7 +291,7 @@ struct QuoteView: View {
             
             Text(text)
                 .font(style.fontStyle.configuration.headingFont.weight(.semibold))
-                .foregroundColor(style.theme.configuration.textColor)
+                .foregroundStyle(style.theme.configuration.textColor)
                 .accessibilityLabel("Quote: \(text)")
             
             HStack {
@@ -328,7 +328,7 @@ struct NumberedListView: View {
                 HStack(alignment: .top, spacing: 16) {
                     Text("\(index + 1)")
                         .font(style.fontStyle.configuration.bodyFont)
-                        .foregroundColor(style.theme.configuration.textColor)
+                        .foregroundStyle(style.theme.configuration.textColor)
                         .multilineTextAlignment(.center)
                         .frame(width: 32, height: 32)
                         .background {
@@ -339,7 +339,7 @@ struct NumberedListView: View {
                     
                     Text(item)
                         .font(style.fontStyle.configuration.bodyFont.weight(.semibold))
-                        .foregroundColor(style.theme.configuration.textColor)
+                        .foregroundStyle(style.theme.configuration.textColor)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .accessibilityLabel("Item \(index + 1): \(item)")
                 }
@@ -363,7 +363,7 @@ struct ListHeaderView: View {
         HStack(alignment: .center, spacing: 16) {
             Text("\(number)")
                 .font(style.fontStyle.configuration.bodyFont)
-                .foregroundColor(style.theme.configuration.textColor)
+                .foregroundStyle(style.theme.configuration.textColor)
                 .multilineTextAlignment(.center)
                 .frame(width: 32, height: 32)
                 .background {
@@ -374,7 +374,7 @@ struct ListHeaderView: View {
             
             Text(text)
                 .font(style.fontStyle.configuration.bodyFont.weight(.semibold))
-                .foregroundColor(style.theme.configuration.textColor)
+                .foregroundStyle(style.theme.configuration.textColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityLabel("Section title: \(text)")
         }
@@ -394,12 +394,12 @@ struct ListItemView: View {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                 HStack(alignment: .top, spacing: 12) {
                     Text("•")
-                        .foregroundColor(style.theme.configuration.textColor)
+                        .foregroundStyle(style.theme.configuration.textColor)
                         .accessibilityHidden(true)
                     
                     Text(item)
                         .font(style.fontStyle.configuration.bodyFont)
-                        .foregroundColor(style.theme.configuration.textColor)
+                        .foregroundStyle(style.theme.configuration.textColor)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .accessibilityLabel("List item \(index + 1): \(item)")
                 }
@@ -422,13 +422,13 @@ struct NumberListItemView: View {
                 HStack(alignment: .top, spacing: 12) {
                     Text("\(index + 1).")
                         .font(style.fontStyle.configuration.bodyFont)
-                        .foregroundColor(style.theme.configuration.textColor)
+                        .foregroundStyle(style.theme.configuration.textColor)
                         .frame(width: 25)
                         .accessibilityHidden(true)
                     
                     Text(item)
                         .font(style.fontStyle.configuration.bodyFont)
-                        .foregroundColor(style.theme.configuration.textColor)
+                        .foregroundStyle(style.theme.configuration.textColor)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .accessibilityLabel("Item \(index + 1): \(item)")
                 }
@@ -458,7 +458,7 @@ struct CodeBlockView: View {
                     Text(language)
                         .font(style.fontStyle.configuration.captionFont)
                         .fontWeight(.semibold)
-                        .foregroundColor(style.theme.configuration.accentColor)
+                        .foregroundStyle(style.theme.configuration.accentColor)
                         .accessibilityLabel("Programming language: \(language)")
                 }
                 
@@ -471,7 +471,7 @@ struct CodeBlockView: View {
                         Text(copied ? "Copied!" : "Copy")
                             .font(style.fontStyle.configuration.captionFont)
                     }
-                    .foregroundColor(style.theme.configuration.accentColor)
+                    .foregroundStyle(style.theme.configuration.accentColor)
                 }
                 .animation(.easeInOut(duration: 0.2), value: copied)
                 .accessibilityLabel(copied ? "Code copied" : "Copy code to clipboard")
@@ -483,7 +483,7 @@ struct CodeBlockView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 Text(code)
                     .font(.system(.subheadline, design: .monospaced))
-                    .foregroundColor(style.theme.configuration.textColor)
+                    .foregroundStyle(style.theme.configuration.textColor)
                     .padding(16)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityLabel("Code block: \(code)")
@@ -494,7 +494,7 @@ struct CodeBlockView: View {
             if let caption = caption {
                 Text(caption)
                     .font(style.fontStyle.configuration.captionFont)
-                    .foregroundColor(style.theme.configuration.secondaryColor)
+                    .foregroundStyle(style.theme.configuration.secondaryColor)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 12)
                     .accessibilityLabel("Code caption: \(caption)")
