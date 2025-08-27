@@ -743,7 +743,7 @@ public extension Article {
 // MARK: - Article Summary Helper
 
 /// A helper struct that makes it easy to work with article metadata
-public struct ArticleSummary {
+public struct ArticleSummary: Sendable {
     public let id: UUID
     public let title: String
     public let subtitle: String?

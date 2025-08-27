@@ -445,7 +445,6 @@ public enum ArticleTheme: Sendable{
     case dark
     case dynamic
     case sepia
-    case vibrant
     case midnight
     case custom(ArticleThemeConfiguration)
     
@@ -453,9 +452,9 @@ public enum ArticleTheme: Sendable{
         switch self {
         case .light:
             return ArticleThemeConfiguration(
-                backgroundColor: Color(.systemBackground),
-                textColor: Color(.label),
-                accentColor: Color.blue,
+                backgroundColor: Color(.white),
+                textColor: Color(.black),
+                accentColor: Color(.blue),
                 secondaryColor: Color(.secondaryLabel),
                 cardBackground: Color(.secondarySystemBackground)
             )
@@ -463,14 +462,14 @@ public enum ArticleTheme: Sendable{
             return ArticleThemeConfiguration(
                 backgroundColor: Color(.black),
                 textColor: Color(.white),
-                accentColor: Color(.systemBlue),
+                accentColor: Color(.blue),
                 secondaryColor: Color(.secondaryLabel),
-                cardBackground: Color(.systemGray6)
+                cardBackground: Color(.secondarySystemBackground)
             )
         case .dynamic:
             return ArticleThemeConfiguration(
                 backgroundColor: Color(.systemBackground),
-                textColor: Color(.label),
+                textColor: .primary,
                 accentColor: Color(.tintColor),
                 secondaryColor: Color(.secondaryLabel),
                 cardBackground: Color(.secondarySystemBackground)
@@ -491,14 +490,6 @@ public enum ArticleTheme: Sendable{
                 secondaryColor: Color(red: 0.7, green: 0.75, blue: 0.8),
                 cardBackground: Color(red: 0.2, green: 0.20, blue: 0.2)
             )
-        case .vibrant:
-            return ArticleThemeConfiguration(
-                backgroundColor: Color(.black),
-                textColor: Color(red: 0.37, green: 0.96, blue: 0.84),
-                accentColor: Color(red: 1.00, green: 0.44, blue: 0.00),
-                secondaryColor: Color(red: 1, green: 0.41, blue: 0.66),
-                cardBackground: Color(red: 0.18, green: 0.18, blue: 0.18)
-            )
         case .custom(let config):
             return config
         }
@@ -511,6 +502,14 @@ public enum ArticleTheme: Sendable{
 
 public extension ArticleStyle {
     static let classic = ArticleStyle(
+        theme: .dynamic,
+        imageStyle: .classic,
+        headerImageStyle: .classic,
+        fontStyle: .sansSerif,
+        authorStyle: .classic
+    )
+    
+    static let newspaper = ArticleStyle(
         theme: .dynamic,
         imageStyle: .classic,
         headerImageStyle: .classic,

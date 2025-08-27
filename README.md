@@ -26,19 +26,20 @@ ArticleKit helps you create clean and customisable article reading experiences i
 
 ## Installation
 
-### Swift Package Manager
+### Install with Swift Package Manager
+1. In Xcode choose **File → Add Packages...**
+2. Paste: `https://github.com/codegw/ArticleKit`
+3. Select a version and add the package to your target.
 
-Add ArticleKit to your project through Xcode:
-
-1. Go to **File → Add Package Dependencies**
-2. Enter the repository URL: `https://github.com/codegw/ArticleKit`
-3. Select **Up to Next Major Version** and click **Add Package**
-
-Or add it to your `Package.swift`:
+Or add to `Package.swift`:
 
 ```swift
 dependencies: [
     .package(url: "https://github.com/codegw/ArticleKit", from: "1.0.0")
+]
+
+targets: [
+    .target(name: "YourTarget", dependencies: ["ArticleKit"])
 ]
 ```
 
