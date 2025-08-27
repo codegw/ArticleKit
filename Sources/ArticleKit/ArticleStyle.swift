@@ -226,8 +226,30 @@ public enum ImageStyle {
     case modern
     
     @ViewBuilder
-    public func apply(to image: Image, imageHeight: CGFloat, caption: String? = nil, fontConfig: FontStyleConfiguration) -> some View {
-        switch self {
+    public func apply(to image: Image, imageHeight: CGFloat, caption: String? = nil) -> some View {
+        ImageBlock(style: self, image: image, imageHeight: imageHeight, caption: caption)
+    }
+    
+    /// Provides a fallback view when the image cannot be loaded.
+    @ViewBuilder
+    public func applyFallback(imageHeight: CGFloat, imageName: String, caption: String? = nil) -> some View {
+        ImageFallbackBlock(style: self, imageHeight: imageHeight, imageName: imageName, caption: caption)
+    }
+}
+
+/// Internal view for rendering styled images with environment access
+private struct ImageBlock: View {
+    let style: ImageStyle
+    let image: Image
+    let imageHeight: CGFloat
+    let caption: String?
+    @Environment(\.articleStyle) private var articleStyle
+    
+    var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
+    var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
+    
+    var body: some View {
+        switch style {
         /// Modern image, with padding, rounded corners, and a caption within the container
         case .modern:
             VStack(spacing: 0) {
@@ -242,9 +264,9 @@ public enum ImageStyle {
                         Rectangle()
                             .fill(.thickMaterial)
                         Text(caption)
-                            .font(fontConfig.captionFont)
+                            .font(fonts.captionFont)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.secondary)
+                            .foregroundColor(colors.secondaryColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                     }
@@ -266,8 +288,8 @@ public enum ImageStyle {
                 
                 if let caption = caption {
                     Text(caption)
-                        .font(fontConfig.captionFont) // Now uses proper caption font
-                        .foregroundColor(.secondary)
+                        .font(fonts.captionFont)
+                        .foregroundColor(colors.secondaryColor)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
@@ -276,25 +298,35 @@ public enum ImageStyle {
             }
         }
     }
+}
+
+/// Internal view for rendering image fallbacks with environment access
+private struct ImageFallbackBlock: View {
+    let style: ImageStyle
+    let imageHeight: CGFloat
+    let imageName: String
+    let caption: String?
+    @Environment(\.articleStyle) private var articleStyle
     
-    /// Provides a fallback view when the image cannot be loaded.
-    @ViewBuilder
-    public func applyFallback(imageHeight: CGFloat, imageName: String, caption: String? = nil, fontConfig: FontStyleConfiguration) -> some View {
+    var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
+    var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
+    
+    var body: some View {
         VStack(spacing: 8) {
             Rectangle()
-                .fill(Color(.systemGray5))
+                .fill(colors.cardBackground)
                 .frame(height: 250)
                 .overlay(
                     Image(systemName: "photo")
                         .font(.largeTitle)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(colors.textColor)
                 )
                 .accessibilityLabel("Image '\(imageName)' not available")
             
             if let caption = caption {
                 Text(caption)
-                    .font(fontConfig.captionFont)
-                    .foregroundColor(.secondary)
+                    .font(fonts.captionFont)
+                    .foregroundColor(colors.secondaryColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
@@ -336,7 +368,6 @@ private struct AuthorBlock: View {
     var body: some View {
         switch style {
         
-        ///
         case .minimal:
             if let author = author {
                 Text(author)
@@ -441,8 +472,6 @@ public struct ArticleThemeConfiguration: Sendable{
 }
 
 public enum ArticleTheme: Sendable{
-    case light
-    case dark
     case dynamic
     case sepia
     case midnight
@@ -450,22 +479,6 @@ public enum ArticleTheme: Sendable{
     
     public var configuration: ArticleThemeConfiguration {
         switch self {
-        case .light:
-            return ArticleThemeConfiguration(
-                backgroundColor: Color(.white),
-                textColor: Color(.black),
-                accentColor: Color(.blue),
-                secondaryColor: Color(.secondaryLabel),
-                cardBackground: Color(.secondarySystemBackground)
-            )
-        case .dark:
-            return ArticleThemeConfiguration(
-                backgroundColor: Color(.black),
-                textColor: Color(.white),
-                accentColor: Color(.blue),
-                secondaryColor: Color(.secondaryLabel),
-                cardBackground: Color(.secondarySystemBackground)
-            )
         case .dynamic:
             return ArticleThemeConfiguration(
                 backgroundColor: Color(.systemBackground),
@@ -495,7 +508,6 @@ public enum ArticleTheme: Sendable{
         }
     }
 }
-
 // MARK: - Pre-defined Styles
 
 /// Created pre-defined styles for easy theming

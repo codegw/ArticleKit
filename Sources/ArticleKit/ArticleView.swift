@@ -145,9 +145,9 @@ struct ArticleBlockView: View {
             
         case .image(let imageName, let caption):
             if UIImage(named: imageName) != nil {
-                style.imageStyle.apply(to: Image(imageName), imageHeight: 200, caption: caption, fontConfig: style.fontStyle.configuration)
+                style.imageStyle.apply(to: Image(imageName), imageHeight: 200, caption: caption)
             } else {
-                style.imageStyle.applyFallback(imageHeight: 200, imageName: imageName, caption: caption, fontConfig: style.fontStyle.configuration)
+                style.imageStyle.applyFallback(imageHeight: 200, imageName: imageName, caption: caption)
             }
             
         case .quote(let text, let author):
