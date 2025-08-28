@@ -1,14 +1,13 @@
 //
-//  ArticleView.swift
-//  ArticleKit
+// ArticleView.swift
+// ArticleKit
 //
-//  Created by codegw on 20/08/2025.
+// Created by codegw on 20/08/2025.
 //
 
 import SwiftUI
 
 // MARK: - Article View
-
 /// A SwiftUI view that renders an Article with customizable styling
 ///
 /// `ArticleView` provides a complete, scrollable article reading experience with support for all article content types including text, images, lists, quotes, and code blocks.
@@ -23,16 +22,16 @@ import SwiftUI
 public struct ArticleView: View {
     /// The article data to render
     public let article: Article
-    
+
     /// The current article style configuration from the environment
     @Environment(\.articleStyle) private var style
-    
+
     /// Creates a new article view
     /// - Parameter article: The article data to display
     public init(article: Article) {
         self.article = article
     }
-    
+
     public var body: some View {
         ScrollView {
             LazyVStack(spacing: 10) {
@@ -42,9 +41,9 @@ public struct ArticleView: View {
                     }
                 }
                 .padding(.bottom, 25)
-                
+
                 LazyVStack(spacing: 25) {
-                    ForEach(article.content) { articleContent in 
+                    ForEach(article.content) { articleContent in
                         ArticleBlockView(block: articleContent.block, style: style)
                     }
                 }
@@ -57,27 +56,22 @@ public struct ArticleView: View {
     }
 }
 
-// MARK: - Article Header
 
+// MARK: - Article Header
 /// Renders individual header blocks within an article
 ///
 /// This view handles the display of all header block types including hero images, titles, subtitles, author information, dates, and topic tags.
-
 struct HeaderBlockView: View {
     let block: HeaderBlock
     let style: ArticleStyle
-    
+
     var body: some View {
         Group {
             switch block {
-            case .heroImage(let imageName):
-                if UIImage(named: imageName) != nil {
-                    style.headerImageStyle.apply(to: Image(imageName))
-                        .padding(.vertical, 10)
-                } else {
-                    style.headerImageStyle.applyFallback()
-                }
-                
+            case .heroImage(let source):
+                style.headerImageStyle.apply(source: source)
+                    .padding(.vertical, 10)
+
             case .title(let text):
                 Text(text)
                     .font(style.fontStyle.configuration.titleFont)
@@ -85,7 +79,7 @@ struct HeaderBlockView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .accessibilityAddTraits(.isHeader)
-                
+
             case .subtitle(let text):
                 Text(text)
                     .font(style.fontStyle.configuration.bodyFont)
@@ -94,16 +88,16 @@ struct HeaderBlockView: View {
                     .padding(.horizontal, 20)
                     .accessibilityLabel("Subtitle: \(text)")
                     .accessibilityAddTraits(.isStaticText)
-                
+
             case .author(let name, let bio, let avatarImage):
                 style.authorStyle.apply(author: name, bio: bio, avatarImage: avatarImage)
                     .padding(.horizontal, 20)
                     .padding(.top, 5)
-                
+
             case .date(let date):
                 DateView(date: date, style: style)
                     .padding(.horizontal, 20)
-                
+
             case .topics(let topics):
                 TopicsView(topics: topics, style: style)
             }
@@ -111,19 +105,19 @@ struct HeaderBlockView: View {
     }
 }
 
-// MARK: - Article Body
 
+// MARK: - Article Body
 /// Renders individual content blocks within an article body
 ///
 /// This view handles the display of all content block types including headings, body text, images, quotes, lists, code blocks, and dividers.
 struct ArticleBlockView: View {
     let block: ArticleBlock
     let style: ArticleStyle
-    
+
     var body: some View {
         contentView
     }
-    
+
     @ViewBuilder
     private var contentView: some View {
         switch block {
@@ -134,7 +128,7 @@ struct ArticleBlockView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
                 .accessibilityAddTraits(.isHeader)
-            
+
         case .body(let text):
             Text(text)
                 .font(style.fontStyle.configuration.bodyFont)
@@ -142,14 +136,10 @@ struct ArticleBlockView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
                 .accessibilityAddTraits(.isStaticText)
-            
-        case .image(let imageName, let caption):
-            if UIImage(named: imageName) != nil {
-                style.imageStyle.apply(to: Image(imageName), imageHeight: 200, caption: caption)
-            } else {
-                style.imageStyle.applyFallback(imageHeight: 200, imageName: imageName, caption: caption)
-            }
-            
+
+        case .image(let source, let caption):
+            style.imageStyle.apply(source: source, imageHeight: 250, caption: caption)
+
         case .quote(let text, let author):
             QuoteView(text: text, author: author, style: style)
                 .padding(.horizontal, 20)
@@ -157,26 +147,26 @@ struct ArticleBlockView: View {
         case .author(let name, let bio, let avatarImage):
             AuthorStyle.detail.apply(author: name, bio: bio, avatarImage: avatarImage)
                 .padding(.horizontal, 20)
-            
+
         case .numberedListHeader(let items):
             NumberedListView(items: items, style: style)
                 .padding(.horizontal, 20)
-            
+
         case .listItemHeader(let number, let text):
             ListHeaderView(number: number, text: text, style: style)
                 .padding(.horizontal, 20)
-            
+
         case .listItem(let items):
             ListItemView(items: items, style: style)
                 .padding(.horizontal, 20)
-            
+
         case .numberedListItem(let items):
             NumberListItemView(items: items, style: style)
                 .padding(.horizontal, 20)
-            
+
         case .codeBlock(let code, let language, let caption):
             CodeBlockView(code: code, language: language, caption: caption, style: style)
-        
+
         case .divider:
             Divider()
                 .frame(height: 2)
@@ -188,13 +178,19 @@ struct ArticleBlockView: View {
 }
 
 // MARK: - Header Views
-
 /// Displays a formatted date in the article header
 ///
 /// Formats dates using a long date style and applies appropriate accessibility labels.
 struct DateView: View {
     let date: Date
     let style: ArticleStyle
+    
+    // Create the formatter only once for performance.
+    private static let longDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        return formatter
+    }()
     
     var body: some View {
         Text(formatDate(date))
@@ -206,9 +202,7 @@ struct DateView: View {
     }
     
     private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        return formatter.string(from: date)
+        return DateView.longDateFormatter.string(from: date)
     }
 }
 
@@ -218,10 +212,9 @@ struct DateView: View {
 struct TopicsView: View {
     let topics: [String]
     let style: ArticleStyle
-    
+
     var body: some View {
         ZStack {
-            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(topics, id: \.self) { topic in
@@ -242,7 +235,6 @@ struct TopicsView: View {
                 .padding(.horizontal, 20)
             }
             fadingEffect
-            
         }
     }
     
@@ -250,20 +242,18 @@ struct TopicsView: View {
         HStack {
             LinearGradient(
                 gradient: Gradient(colors: [
-                    Color(.systemBackground),
-                    Color(.systemBackground).opacity(0)
+                    style.theme.configuration.backgroundColor,
+                    style.theme.configuration.backgroundColor.opacity(0)
                 ]),
                 startPoint: .leading,
                 endPoint: .trailing
             )
             .frame(width: 25)
-            
             Spacer()
-            
             LinearGradient(
                 gradient: Gradient(colors: [
-                    Color(.systemBackground).opacity(0),
-                    Color(.systemBackground)
+                    style.theme.configuration.backgroundColor.opacity(0),
+                    style.theme.configuration.backgroundColor
                 ]),
                 startPoint: .leading,
                 endPoint: .trailing
@@ -281,19 +271,19 @@ struct QuoteView: View {
     let text: String
     let author: String?
     let style: ArticleStyle
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(systemName: "quote.opening")
                 .font(.title)
                 .foregroundStyle(style.theme.configuration.accentColor)
                 .accessibilityHidden(true)
-            
+
             Text(text)
                 .font(style.fontStyle.configuration.headingFont.weight(.semibold))
                 .foregroundStyle(style.theme.configuration.textColor)
                 .accessibilityLabel("Quote: \(text)")
-            
+
             HStack {
                 if let author = author {
                     Text("— \(author)")
@@ -301,9 +291,7 @@ struct QuoteView: View {
                         .foregroundStyle(style.theme.configuration.secondaryColor)
                         .accessibilityLabel("Quote author: \(author)")
                 }
-                
                 Spacer()
-                
                 Image(systemName: "quote.closing")
                     .font(.title)
                     .foregroundStyle(style.theme.configuration.accentColor)
@@ -315,13 +303,13 @@ struct QuoteView: View {
     }
 }
 
-// MARK: - Body Views
 
+// MARK: - Body Views
 ///Displays a numbered list, which increments by one for each item
 struct NumberedListView: View {
     let items: [String]
     let style: ArticleStyle
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
@@ -336,7 +324,7 @@ struct NumberedListView: View {
                                 .fill(style.theme.configuration.cardBackground)
                         }
                         .accessibilityLabel("Number \(index + 1)")
-                    
+
                     Text(item)
                         .font(style.fontStyle.configuration.bodyFont.weight(.semibold))
                         .foregroundStyle(style.theme.configuration.textColor)
@@ -358,7 +346,7 @@ struct ListHeaderView: View {
     let number: Int
     let text: String
     let style: ArticleStyle
-    
+
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
             Text("\(number)")
@@ -371,7 +359,7 @@ struct ListHeaderView: View {
                         .fill(style.theme.configuration.cardBackground)
                 }
                 .accessibilityLabel("Section \(number)")
-            
+
             Text(text)
                 .font(style.fontStyle.configuration.bodyFont.weight(.semibold))
                 .foregroundStyle(style.theme.configuration.textColor)
@@ -388,7 +376,7 @@ struct ListHeaderView: View {
 struct ListItemView: View {
     let items: [String]
     let style: ArticleStyle
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
@@ -396,7 +384,7 @@ struct ListItemView: View {
                     Text("•")
                         .foregroundStyle(style.theme.configuration.textColor)
                         .accessibilityHidden(true)
-                    
+
                     Text(item)
                         .font(style.fontStyle.configuration.bodyFont)
                         .foregroundStyle(style.theme.configuration.textColor)
@@ -415,7 +403,7 @@ struct ListItemView: View {
 struct NumberListItemView: View {
     let items: [String]
     let style: ArticleStyle
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
@@ -425,7 +413,7 @@ struct NumberListItemView: View {
                         .foregroundStyle(style.theme.configuration.textColor)
                         .frame(width: 25)
                         .accessibilityHidden(true)
-                    
+
                     Text(item)
                         .font(style.fontStyle.configuration.bodyFont)
                         .foregroundStyle(style.theme.configuration.textColor)
@@ -448,8 +436,10 @@ struct CodeBlockView: View {
     let language: String?
     let caption: String?
     let style: ArticleStyle
+
     @State private var copied = false
-    
+    @State private var copyTask: Task<Void, Never>?
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Header with language and copy button
@@ -461,9 +451,7 @@ struct CodeBlockView: View {
                         .foregroundStyle(style.theme.configuration.accentColor)
                         .accessibilityLabel("Programming language: \(language)")
                 }
-                
                 Spacer()
-                
                 Button(action: copyCode) {
                     HStack(spacing: 4) {
                         Image(systemName: copied ? "checkmark" : "doc.on.doc")
@@ -478,7 +466,7 @@ struct CodeBlockView: View {
             }
             .padding(.horizontal, 16)
             .padding(.top, 12)
-            
+
             // Code content
             ScrollView(.horizontal, showsIndicators: false) {
                 Text(code)
@@ -506,13 +494,20 @@ struct CodeBlockView: View {
         )
         .padding(.horizontal, 20)
     }
-    
+
     private func copyCode() {
         UIPasteboard.general.string = code
         copied = true
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            copied = false
+        copyTask?.cancel()
+        copyTask = Task {
+            do {
+                try await Task.sleep(for: .seconds(2))
+                self.copied = false
+            } catch {
+                // This task is cancelled when the view disappears or copy is tapped again
+            }
         }
     }
 }
+

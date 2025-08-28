@@ -1,14 +1,13 @@
 //
-//  ArticleStyle.swift
-//  ArticleKit
+// ArticleStyle.swift
+// ArticleKit
 //
-//  Created by codegw on 20/08/2025.
+// Created by codegw on 20/08/2025.
 //
 
 import SwiftUI
 
 // MARK: - Article Style
-
 /// A comprehensive styling system for customizing the appearance of articles
 ///
 /// `ArticleStyle` provides a unified way to customize all visual aspects of an article,
@@ -25,24 +24,18 @@ import SwiftUI
 ///     authorStyle: .classic
 /// )
 /// ```
-
 public struct ArticleStyle: Sendable {
     /// Color theme configuration for the article
     public var theme: ArticleTheme
-    
     /// Styling for content images within the article body
     public var imageStyle: ImageStyle
-    
     /// Styling for hero images within the article header
     public var headerImageStyle: HeaderImageStyle
-    
     /// Typography configuration for all text elements
     public var fontStyle: FontStyle
-    
     /// Styling for author information display
     public var authorStyle: AuthorStyle
-    
-    
+
     /// Creates a new article style configuration
     /// - Parameters:
     ///   - theme: Color theme to apply
@@ -50,7 +43,6 @@ public struct ArticleStyle: Sendable {
     ///   - headerImageStyle: Style for hero images
     ///   - fontStyle: Typography configuration
     ///   - authorStyle: Author information display style
-
     public init(
         theme: ArticleTheme,
         imageStyle: ImageStyle,
@@ -66,8 +58,8 @@ public struct ArticleStyle: Sendable {
     }
 }
 
-// MARK: - Font Style
 
+// MARK: - Font Style
 /// Typography configuration options for article text elements
 ///
 /// Provides predefined font combinations optimized for readability and visual hierarchy.
@@ -132,16 +124,13 @@ public enum FontStyle : Sendable{
 public struct FontStyleConfiguration : Sendable{
     /// Primary font for article titles
     public let titleFont: Font
-    
     /// Font for section headings within articles
     public let headingFont: Font
-    
     /// Font for body within articles
     public let bodyFont: Font
-    
     /// Font for captions and secondary text within articles
     public let captionFont: Font
-    
+
     public init(titleFont: Font, headingFont: Font, bodyFont: Font, captionFont: Font) {
         self.titleFont = titleFont
         self.headingFont = headingFont
@@ -150,8 +139,39 @@ public struct FontStyleConfiguration : Sendable{
     }
 }
 
-// MARK: - Header Image Style
 
+// MARK: - Image View Helper
+/// A private helper view that resolves an ImageSource to a concrete Image view.
+/// It handles both local assets and remote URLs, providing a consistent placeholder.
+private struct ImageView<Placeholder: View>: View {
+    let source: ImageSource
+    @ViewBuilder let placeholder: () -> Placeholder
+
+    var body: some View {
+        switch source {
+        case .asset(let name):
+            if UIImage(named: name) != nil {
+                Image(name).resizable()
+            } else {
+                placeholder()
+            }
+        case .remote(let url):
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image.resizable()
+                case .failure, .empty:
+                    placeholder()
+                @unknown default:
+                    placeholder()
+                }
+            }
+        }
+    }
+}
+
+
+// MARK: - Header Image Style
 /// Styling options for hero images displayed in article headers
 ///
 /// Controls how header images are presented, including corner radius, padding, and fallback appearance when images are unavailable.
@@ -159,65 +179,60 @@ public struct FontStyleConfiguration : Sendable{
 public enum HeaderImageStyle {
     case classic
     case modern
-    
+
     @ViewBuilder
-    public func apply(to image: Image) -> some View {
-        switch self {
-        /// Modern header with horizontal padding and rounded corners
-        case .modern:
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(maxWidth: .infinity, maxHeight: 250)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .padding(.horizontal)
-                .clipped()
-                .accessibilityLabel("Article hero image")
-        
-        /// Classic full-width header image with no rounded corners
-        case .classic:
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(maxWidth: .infinity, maxHeight: 250)
-                .clipped()
-                .accessibilityLabel("Article hero image")
-        }
+    public func apply(source: ImageSource) -> some View {
+        ImageView(source: source, placeholder: applyFallback)
+            .modifier(self)
     }
-    
+
     /// Provides a fallback view when the header image cannot be loaded.
     @ViewBuilder
     public func applyFallback() -> some View {
+        let fallbackContent = Rectangle()
+            .fill(Color(.systemGray5))
+            .frame(height: 250)
+            .overlay(
+                Image(systemName: "photo")
+                    .font(.largeTitle)
+                    .foregroundStyle(.secondary)
+            )
+            .accessibilityLabel("Article hero image unavailable")
+        
         switch self {
         case .modern:
-            Rectangle()
-                .fill(Color(.systemGray5))
-                .frame(height: 250)
+            fallbackContent
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding(.horizontal)
-                .overlay(
-                    Image(systemName: "photo")
-                        .font(.largeTitle)
-                        .foregroundStyle(.secondary)
-                        
-                )
-                .accessibilityLabel("Article hero image unavailable")
         case .classic:
-            Rectangle()
-                .fill(Color(.systemGray5))
-                .frame(height: 250)
-                .overlay(
-                    Image(systemName: "photo")
-                        .font(.largeTitle)
-                        .foregroundStyle(.secondary)
-                )
-                .accessibilityLabel("Article hero image unavailable")
+            fallbackContent
         }
     }
 }
 
-// MARK: - Image Style
+extension HeaderImageStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        switch self {
+        case .modern:
+            content
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: 250)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .padding(.horizontal)
+                .clipped()
+                .accessibilityLabel("Article hero image")
+        case .classic:
+            content
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: 250)
+                .clipped()
+                .accessibilityLabel("Article hero image")
+        }
+    }
+}
 
+
+// MARK: - Image Style
 /// Styling options for content images within article bodies
 ///
 /// Controls the presentation of images embedded in article content, including caption styling and fallback appearance.
@@ -225,68 +240,108 @@ public enum HeaderImageStyle {
 public enum ImageStyle {
     case classic
     case modern
-    
+
     @ViewBuilder
-    public func apply(to image: Image, imageHeight: CGFloat, caption: String? = nil) -> some View {
-        ImageBlock(style: self, image: image, imageHeight: imageHeight, caption: caption)
+    public func apply(source: ImageSource, imageHeight: CGFloat, caption: String? = nil) -> some View {
+        ImageBlock(style: self, source: source, imageHeight: imageHeight, caption: caption)
     }
-    
+
     /// Provides a fallback view when the image cannot be loaded.
     @ViewBuilder
-    public func applyFallback(imageHeight: CGFloat, imageName: String, caption: String? = nil) -> some View {
-        ImageFallbackBlock(style: self, imageHeight: imageHeight, imageName: imageName, caption: caption)
+    public func applyFallback(imageHeight: CGFloat, caption: String? = nil) -> some View {
+        ImageFallbackBlock(style: self, imageHeight: imageHeight, caption: caption)
     }
-}
 
-/// Internal view for rendering styled images with environment access
-private struct ImageBlock: View {
-    let style: ImageStyle
-    let image: Image
-    let imageHeight: CGFloat
-    let caption: String?
-    @Environment(\.articleStyle) private var articleStyle
-    
-    var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
-    var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
-    
-    var body: some View {
-        switch style {
-        /// Modern image, with padding, rounded corners, and a caption within the container
-        case .modern:
-            VStack(spacing: 0) {
-                ZStack (alignment: .topTrailing){
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .accessibilityHidden(true)
+    /// Internal view for rendering styled images with environment access
+    private struct ImageBlock: View {
+        let style: ImageStyle
+        let source: ImageSource
+        let imageHeight: CGFloat
+        let caption: String?
+
+        @Environment(\.articleStyle) private var articleStyle
+        var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
+        var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
+
+        var body: some View {
+            let imageContent = ImageView(source: source) {
+                articleStyle.imageStyle.applyFallback(imageHeight: imageHeight, caption: nil)
+            }
+            
+            switch style {
+                /// Modern image, with padding, rounded corners, and a caption within the container
+            case .modern:
+                VStack(spacing: 0) {
+                    ZStack(alignment: .topTrailing) {
+                        imageContent
+                            .aspectRatio(contentMode: .fill)
+                            .clipped()
+                            .accessibilityHidden(true)
+                    }
+                    
+                    if let caption = caption {
+                        ZStack {
+                            Rectangle()
+                                .foregroundStyle(colors.cardBackground.opacity(0.7))
+                            Text(caption)
+                                .font(fonts.captionFont)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(colors.secondaryColor)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                        }
+                        .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-                if let caption = caption {
-                    ZStack {
-                        Rectangle()
-                            .foregroundStyle(colors.cardBackground)
+                .mask {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                }
+                .padding(.horizontal, 20)
+            
+            /// Classic image, full-width, and a caption outside the container
+            case .classic:
+                VStack(spacing: 8) {
+                    imageContent
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                        .accessibilityLabel(caption ?? "Article image")
+                    
+                    if let caption = caption {
                         Text(caption)
                             .font(fonts.captionFont)
-                            .fontWeight(.semibold)
                             .foregroundStyle(colors.secondaryColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .accessibilityLabel("Image caption: \(caption)")
                     }
                 }
             }
-            .mask {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-            }
-            .padding(.horizontal, 20)
+        }
+    }
+
+    /// Internal view for rendering image fallbacks with environment access
+    private struct ImageFallbackBlock: View {
+        let style: ImageStyle
+        let imageHeight: CGFloat
+        let caption: String?
+
+        @Environment(\.articleStyle) private var articleStyle
+        var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
+        var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
         
-        /// Classic image, full-width, and a caption outside the container
-        case .classic:
+        var body: some View {
             VStack(spacing: 8) {
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .clipped()
-                    .accessibilityLabel(caption ?? "Article image")
-                
+                Rectangle()
+                    .fill(colors.cardBackground)
+                    .frame(height: imageHeight)
+                    .overlay(
+                        Image(systemName: "photo")
+                            .font(.largeTitle)
+                            .foregroundStyle(colors.textColor)
+                    )
+                    .accessibilityLabel("Image not available")
+
                 if let caption = caption {
                     Text(caption)
                         .font(fonts.captionFont)
@@ -301,45 +356,8 @@ private struct ImageBlock: View {
     }
 }
 
-/// Internal view for rendering image fallbacks with environment access
-private struct ImageFallbackBlock: View {
-    let style: ImageStyle
-    let imageHeight: CGFloat
-    let imageName: String
-    let caption: String?
-    @Environment(\.articleStyle) private var articleStyle
-    
-    var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
-    var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
-    
-    var body: some View {
-        VStack(spacing: 8) {
-            Rectangle()
-                .fill(colors.cardBackground)
-                .frame(height: 250)
-                .overlay(
-                    Image(systemName: "photo")
-                        .font(.largeTitle)
-                        .foregroundStyle(colors.textColor)
-                )
-                .accessibilityLabel("Image '\(imageName)' not available")
-            
-            if let caption = caption {
-                Text(caption)
-                    .font(fonts.captionFont)
-                    .foregroundStyle(colors.secondaryColor)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .accessibilityLabel("Image caption: \(caption)")
-            }
-        }
-    }
-}
-
 
 // MARK: - Author Style
-
 /// Styling options for author elements within the article
 ///
 /// Controls the presentation of author information, with choice from the name, or bio and profile image
@@ -348,87 +366,84 @@ public enum AuthorStyle {
     case minimal
     case classic
     case detail
-    
+
     @ViewBuilder
-    public func apply(author: String?, bio: String? = nil, avatarImage: String? = nil) -> some View {
+    public func apply(author: String?, bio: String? = nil, avatarImage: ImageSource? = nil) -> some View {
         AuthorBlock(style: self, author: author, bio: bio, avatarImage: avatarImage)
     }
-}
 
-/// Defines the visual styling options for author styles within the article
-private struct AuthorBlock: View {
-    let style: AuthorStyle
-    let author: String?
-    let bio: String?
-    let avatarImage: String?
-    @Environment(\.articleStyle) private var articleStyle
-    
-    var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
-    var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
-    
-    var body: some View {
-        switch style {
+    private struct AuthorBlock: View {
+        let style: AuthorStyle
+        let author: String?
+        let bio: String?
+        let avatarImage: ImageSource?
+
+        @Environment(\.articleStyle) private var articleStyle
+        var fonts: FontStyleConfiguration { articleStyle.fontStyle.configuration }
+        var colors: ArticleThemeConfiguration { articleStyle.theme.configuration }
         
-        case .minimal:
-            if let author = author {
-                Text(author)
-                    .font(fonts.captionFont)
-                    .foregroundStyle(colors.secondaryColor)
-                    .accessibilityLabel("Author: \(author)")
-                    .accessibilityAddTraits(.isStaticText)
-            }
-            
-        case .classic:
-            HStack(spacing: 10) {
-                if let avatarImage = avatarImage {
-                    authorAvatar(avatarImage, size: 30)
-                }
-                
+        var body: some View {
+            switch style {
+            case .minimal:
                 if let author = author {
                     Text(author)
-                        .font(fonts.bodyFont.weight(.medium))
+                        .font(fonts.captionFont)
                         .foregroundStyle(colors.secondaryColor)
                         .accessibilityLabel("Author: \(author)")
+                        .accessibilityAddTraits(.isStaticText)
                 }
-            }
-            .accessibilityElement(children: .combine)
-            
-        case .detail:
-            HStack(alignment: .top, spacing: 12) {
-                if let avatarImage = avatarImage {
-                    authorAvatar(avatarImage, size: 75)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
+            case .classic:
+                HStack(spacing: 10) {
+                    if let avatarImage = avatarImage {
+                        authorAvatar(avatarImage, size: 30)
+                    }
+
                     if let author = author {
                         Text(author)
                             .font(fonts.bodyFont.weight(.medium))
-                            .foregroundStyle(colors.textColor)
+                            .foregroundStyle(colors.secondaryColor)
                             .accessibilityLabel("Author: \(author)")
                     }
-                    
-                    if let bio = bio {
-                        Text(bio)
-                            .font(fonts.captionFont)
-                            .foregroundStyle(colors.secondaryColor)
-                            .accessibilityLabel("Author bio: \(bio)")
+                }
+                .accessibilityElement(children: .combine)
+            case .detail:
+                HStack(alignment: .top, spacing: 12) {
+                    if let avatarImage = avatarImage {
+                        authorAvatar(avatarImage, size: 75)
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        if let author = author {
+                            Text(author)
+                                .font(fonts.bodyFont.weight(.medium))
+                                .foregroundStyle(colors.textColor)
+                                .accessibilityLabel("Author: \(author)")
+                        }
+                        if let bio = bio {
+                            Text(bio)
+                                .font(fonts.captionFont)
+                                .foregroundStyle(colors.secondaryColor)
+                                .accessibilityLabel("Author bio: \(bio)")
+                        }
                     }
                 }
+                .accessibilityElement(children: .combine)
             }
-            .accessibilityElement(children: .combine)
         }
-    }
-    
-    @ViewBuilder
-    private func authorAvatar(_ imageName: String, size: CGFloat) -> some View {
-        if UIImage(named: imageName) != nil {
-            Image(imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: size, height: size)
-                .clipShape(Circle())
-                .accessibilityLabel("Author profile picture")
-        } else {
+        
+        @ViewBuilder
+        private func authorAvatar(_ source: ImageSource, size: CGFloat) -> some View {
+            ImageView(source: source) {
+                placeholderAvatar(size: size)
+            }
+            .aspectRatio(contentMode: .fill)
+            .frame(width: size, height: size)
+            .clipShape(Circle())
+            .accessibilityLabel("Author profile picture")
+        }
+
+        @ViewBuilder
+        private func placeholderAvatar(size: CGFloat) -> some View {
             Circle()
                 .fill(Color(.systemGray5))
                 .frame(width: size, height: size)
@@ -442,21 +457,22 @@ private struct AuthorBlock: View {
     }
 }
 
-// MARK: - Theme Configuration
 
+// MARK: - Theme Configuration
 /// Styling options for colors and typography color within the article
 ///
 /// It is recommended that you use the `.dynamic` theme for support with Light and Dark mode
 /// Other themes are additionally provided for your control, such as sepia and midnight
 ///
 /// - Important: Before using a custom theme, **always check WCAG compliance.**
+
 public struct ArticleThemeConfiguration: Sendable{
     public let backgroundColor: Color
     public let textColor: Color
     public let accentColor: Color
     public let secondaryColor: Color
     public let cardBackground: Color
-    
+
     public init(
         backgroundColor: Color,
         textColor: Color,
@@ -509,10 +525,10 @@ public enum ArticleTheme: Sendable{
         }
     }
 }
+
+
 // MARK: - Pre-defined Styles
-
 /// Created pre-defined styles for easy theming
-
 public extension ArticleStyle {
     static let classic = ArticleStyle(
         theme: .dynamic,
@@ -521,7 +537,7 @@ public extension ArticleStyle {
         fontStyle: .sansSerif,
         authorStyle: .classic
     )
-    
+
     static let newspaper = ArticleStyle(
         theme: .dynamic,
         imageStyle: .classic,
@@ -529,7 +545,7 @@ public extension ArticleStyle {
         fontStyle: .serif,
         authorStyle: .classic
     )
-    
+
     static let modern = ArticleStyle(
         theme: .dynamic,
         imageStyle: .modern,
@@ -537,7 +553,7 @@ public extension ArticleStyle {
         fontStyle: .sansSerif,
         authorStyle: .minimal
     )
-    
+
     static let reading = ArticleStyle(
         theme: .sepia,
         imageStyle: .classic,
@@ -545,7 +561,7 @@ public extension ArticleStyle {
         fontStyle: .serif,
         authorStyle: .minimal
     )
-    
+
     static let developer = ArticleStyle(
         theme: .midnight,
         imageStyle: .classic,
@@ -554,6 +570,7 @@ public extension ArticleStyle {
         authorStyle: .classic
     )
 }
+
 
 // MARK: - Environment Support
 private struct ArticleStyleKey: EnvironmentKey {
@@ -572,3 +589,4 @@ public extension View {
         environment(\.articleStyle, style)
     }
 }
+
