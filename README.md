@@ -22,7 +22,7 @@ ArticleKit helps you create clean and customisable article reading experiences i
 - **Rich Content Blocks**: Support for text, images, quotes, code blocks, lists, and more
 - **Flexible Styling**: Pre-built themes (classic, modern, reading, developer) with additional customisation
 - **JSON Support**: Load articles from JSON with clean, readable format
-- **Accessibility First**: Built-in VoiceOver support and accessibility labels
+- **Accessibility**: Built-in VoiceOver support and accessibility labels
 
 > **ArticleKit is in active development**. 
 > The core architecture and API are stable, but new features and platform support are planned for the future. 
@@ -56,15 +56,16 @@ import ArticleKit
 
 struct ContentView: View {
     let article = Article(
+        id: "welcome-article",
         header: [
-            .heroImage("hero-image"),
+            .heroImage(.asset(name: "hero-image")),
             .title("Welcome to ArticleKit"),
-            .author("John “Appleseed", bio: "iOS Developer", avatarImage: “john-avatar")
+            .author("John Appleseed", bio: "iOS Developer", avatarImage: .asset(name: "john-avatar"))
         ],
         content: [
             .heading("Getting Started"),
-            .body("ArticleKit makes it easy to create beautiful, readable articles"),
-            .image("example-image", caption: "A beautiful SwiftUI interface")
+            .body("ArticleKit makes it easy to create beautiful, readable articles."),
+            .image(.asset(name: "example-image"), caption: "A beautiful SwiftUI interface")
         ]
     )
     
@@ -84,6 +85,7 @@ let article = try Article.fromBundle(resourceName: "my-article")
 // Load from JSON string
 let jsonString = """
 {
+  "id": "my-article",
   "header": [
     { "type": "title", "title": "My Article" },
     { "type": "author", "author": { "name": "John Appleseed" } }
@@ -100,10 +102,10 @@ let article = try Article.from(jsonString: jsonString)
 
 ### Header Blocks
 
-- **Hero Image**: `.heroImage("image-name")`
+- **Hero Image**: `.heroImage(.asset(name: "hero-image"))`
 - **Title**: `.title("Article Title")`
 - **Subtitle**: `.subtitle("Article Subtitle")`
-- **Author**: `.author("Name", bio: "Bio", avatarImage: "avatar")`
+- **Author**: `.author("John", bio: "iOS Developer", avatarImage: .asset(name: "john-avatar"))`
 - **Date**: `.date(Date())`
 - **Topics**: `.topics(["iOS", "SwiftUI"])`
 
@@ -111,7 +113,7 @@ let article = try Article.from(jsonString: jsonString)
 
 - **Headings**: `.heading("Section Title")`
 - **Body Text**: `.body("Paragraph content")`
-- **Images**: `.image("image-name", caption: "Caption")`
+- **Images**: `.image(.asset(name: "example-image"), caption: "A beautiful SwiftUI interface")`
 - **Quotes**: `.quote("Quote text", author: "Attribution")`
 - **Code**: `.codeBlock("print('Hello')", language: "swift")`
 - **Lists**: `.listItem(["Item 1", "Item 2"])`, `.numberedListItem([...])`
@@ -158,10 +160,15 @@ ArticleKit uses a simple JSON format:
 
 ```json
 {
+  "id": "example-article",
   "header": [
-    {
+        {
       "type": "heroImage",
-      "heroImage": "hero-image"
+      "heroImage": {
+        "remote": {
+          "url": "link-to-image"
+        }
+      }
     },
     {
       "type": "title",
@@ -172,7 +179,11 @@ ArticleKit uses a simple JSON format:
       "author": {
         "name": "Author Name",
         "bio": "Author Bio",
-        "avatarImage": "avatar"
+        "avatarImage": {
+          "asset": {
+            "name": "avatar"
+          }
+        }
       }
     }
   ],
@@ -188,8 +199,12 @@ ArticleKit uses a simple JSON format:
     {
       "type": "image",
       "image": {
-        "imageName": "example",
-        "caption": "Image caption"
+        "imageName": {
+          "asset": {
+            "name": "example"
+          }
+        },
+        "caption": "An image caption"
       }
     }
   ]
