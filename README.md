@@ -24,6 +24,9 @@ ArticleKit helps you create clean and customisable article reading experiences i
 - **JSON Support**: Load articles from JSON with clean, readable format
 - **Accessibility First**: Built-in VoiceOver support and accessibility labels
 
+> **ArticleKit is in active development**. 
+> The core architecture and API are stable, but new features and platform support are planned for the future. 
+
 ## Installation
 
 ### Install with Swift Package Manager
