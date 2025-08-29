@@ -72,8 +72,13 @@ Documentation improvements are welcome! You can:
 - Update the README.md with installation, usage, or examples
 - Contribute to the Wiki for tutorials
 - Add or modify project assets in the assets/ folder (e.g., images, screenshots)
-- Please ensure all docs remain clear, concise, and consistent with the project’s tone.
+
+Please ensure all docs remain clear, concise, and consistent with the project’s tone.
 
 ## License
 
 By contributing to ArticleKit, you agree that your contributions will be licensed under the same MIT License that covers the project.
+
+---
+
+Thank you for contributing to ArticleKit!
