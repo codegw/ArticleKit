@@ -21,7 +21,22 @@ ArticleKit follows three core principles:
 2. **Flexibility**: Customize every aspect of appearance while maintaining consistency  
 3. **Accessibility**: Ensure content is accessible to all users automatically
 
-## Quick Start Example
+## Getting Started
+
+### Install with Swift Package Manager
+1. In Xcode choose **File → Add Packages...**
+2. Paste: `https://github.com/codegw/ArticleKit`
+3. Select a version and add the package to your target.
+
+Or add to `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/codegw/ArticleKit", from: "1.0.0")
+]
+```
+
+## Quick Start
 
 ```swift
 import ArticleKit
@@ -69,7 +84,6 @@ Flexible content creation:
 ## Documentation
 
 ### Essential Guides
-- [Getting Started](getting-started.md) - Installation and first article
 - [Creating Articles](creating-articles.md) - Swift and JSON article creation
 - [Styling Guide](styling-guide.md) - Themes, fonts, and customization
 
