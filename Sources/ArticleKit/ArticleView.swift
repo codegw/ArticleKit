@@ -313,7 +313,7 @@ struct NumberedListView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                HStack(alignment: .top, spacing: 16) {
+                HStack(alignment: .center, spacing: 16) {
                     Text("\(index + 1)")
                         .font(style.fontStyle.configuration.bodyFont)
                         .foregroundStyle(style.theme.configuration.textColor)
