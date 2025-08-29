@@ -2,7 +2,7 @@
   <img width="200" height="200" src="assets/ArticleKit.png" alt= "ArticleKit logo">
   <h1>ArticleKit</h1>
   <p>
-    A simple SwiftUI framework for creating rich and readable articles with customisable styling support.
+    A simple SwiftUI framework for creating rich and readable articles with customizable styling support.
   </p>
   <div align="center">
     <img src="https://img.shields.io/badge/Swift-6.1-orange.svg" alt="Swift Version">
@@ -15,12 +15,12 @@
 
 ## Overview
 
-ArticleKit helps you create clean and customisable article reading experiences in SwiftUI applications, for blogs, how-to guides, or in-app articles.
+ArticleKit helps you create clean and customizable article reading experiences in SwiftUI applications, for blogs, how-to guides, or in-app articles.
 
 ## Features
 
 - **Rich Content Blocks**: Support for text, images, quotes, code blocks, lists, and more
-- **Flexible Styling**: Pre-built themes (classic, modern, reading, developer) with additional customisation
+- **Flexible Styling**: Pre-built themes (classic, modern, reading, developer) with additional customization
 - **JSON Support**: Load articles from JSON with clean, readable format
 - **Accessibility**: Built-in VoiceOver support and accessibility labels
 
