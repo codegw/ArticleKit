@@ -2,7 +2,7 @@
   <img width="200" height="200" src="assets/ArticleKit.png" alt= "ArticleKit logo">
   <h1>ArticleKit</h1>
   <p>
-    A simple SwiftUI framework for creating rich and readable articles with customisable styling support.
+    A simple SwiftUI framework for creating rich and readable articles with customizable styling support.
   </p>
   <div align="center">
     <img src="https://img.shields.io/badge/Swift-6.1-orange.svg" alt="Swift Version">
@@ -15,17 +15,19 @@
 
 ## Overview
 
-ArticleKit helps you create clean and customisable article reading experiences in SwiftUI applications, for blogs, how-to guides, or in-app articles.
+ArticleKit helps you create clean and customizable article reading experiences in SwiftUI applications, for blogs, how-to guides, or in-app articles.
 
 ## Features
 
 - **Rich Content Blocks**: Support for text, images, quotes, code blocks, lists, and more
-- **Flexible Styling**: Pre-built themes (classic, modern, reading, developer) with additional customisation
+- **Flexible Styling**: Pre-built themes (classic, modern, reading, developer) with additional customization
 - **JSON Support**: Load articles from JSON with clean, readable format
 - **Accessibility**: Built-in VoiceOver support and accessibility labels
 
 > **ArticleKit is in active development**. 
-> The core architecture and API are stable, but new features and platform support are planned for the future. 
+> The core architecture and API are stable, but new features and platform support are planned for the future.
+
+![ArticleKit Examples](assets/Articles.png)
 
 ## Installation
 
@@ -38,7 +40,7 @@ Or add to `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/codegw/ArticleKit", from: "0.0.1")
+    .package(url: "https://github.com/codegw/ArticleKit", from: "1.0.0")
 ]
 ```
 
@@ -75,23 +77,32 @@ struct ContentView: View {
 ### Loading from JSON
 
 ```swift
-// Load from bundle
-let article = try Article.fromBundle(resourceName: "my-article")
-
-// Load from JSON string
+// From JSON string
 let jsonString = """
 {
   "id": "my-article",
   "header": [
     { "type": "title", "title": "My Article" },
-    { "type": "author", "author": { "name": "John Appleseed" } }
+    { "type": "author", "author": { "name": "John Appleseed", "bio": "Developer" } }
   ],
   "content": [
     { "type": "body", "body": "Article content here..." }
   ]
 }
 """
-let article = try Article.from(jsonString: jsonString)
+
+do {
+    let article = try Article.from(jsonString: jsonString)
+    let articleView = ArticleView(article: article)
+} catch {
+    print("Failed to load article: \(error)")
+}
+
+// From bundle resource
+if let url = Bundle.main.url(forResource: "article", withExtension: "json"),
+   let data = try? Data(contentsOf: url) {
+    let article = try Article.from(jsonData: data)
+}
 ```
 
 ## Content Blocks
@@ -115,97 +126,9 @@ let article = try Article.from(jsonString: jsonString)
 - **Lists**: `.listItem(["Item 1", "Item 2"])`, `.numberedListItem([...])`
 - **Dividers**: `.divider`
 
-## Styling
+## Documentation
 
-### Pre-built Styles
-
-```swift
-ArticleView(article: article)
-    .articleStyle(.classic)     // Traditional serif styling
-    .articleStyle(.modern)      // Clean, contemporary look
-    .articleStyle(.reading)     // Sepia theme for comfortable reading
-    .articleStyle(.developer)   // Dark theme with monospace fonts
-```
-
-### Custom Styling
-
-```swift
-let customStyle = ArticleStyle(
-    theme: .custom(ArticleThemeConfiguration(
-        backgroundColor: .black,
-        textColor: .white,
-        accentColor: .blue,
-        secondaryColor: .gray,
-        cardBackground: .gray
-    )),
-    imageStyle: .modern,
-    headerImageStyle: .classic,
-    fontStyle: .serif,
-    authorStyle: .detail
-)
-
-ArticleView(article: article)
-    .articleStyle(customStyle)
-```
-
-> For best styling practices, follow the ArticleKit documentation
-
-## JSON Format
-
-ArticleKit uses a simple JSON format:
-
-```json
-{
-  "id": "example-article",
-  "header": [
-        {
-      "type": "heroImage",
-      "heroImage": {
-        "remote": {
-          "url": "link-to-image"
-        }
-      }
-    },
-    {
-      "type": "title",
-      "title": "Article Title"
-    },
-    {
-      "type": "author",
-      "author": {
-        "name": "Author Name",
-        "bio": "Author Bio",
-        "avatarImage": {
-          "asset": {
-            "name": "avatar"
-          }
-        }
-      }
-    }
-  ],
-  "content": [
-    {
-      "type": "heading",
-      "heading": "Section Heading"
-    },
-    {
-      "type": "body",
-      "body": "Article content goes here..."
-    },
-    {
-      "type": "image",
-      "image": {
-        "imageName": {
-          "asset": {
-            "name": "example"
-          }
-        },
-        "caption": "An image caption"
-      }
-    }
-  ]
-}
-```
+Documentation is available in the [ArticleKit Wiki](https://github.com/codegw/ArticleKit/wiki)
 
 ## Contributing
 
@@ -220,4 +143,9 @@ Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTIN
 ## License
 
 ArticleKit is available under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Support
+
+If you like this project, give it a star ★
+
 
