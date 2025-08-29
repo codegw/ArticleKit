@@ -287,7 +287,7 @@ struct QuoteView: View {
             HStack {
                 if let author = author {
                     Text("— \(author)")
-                        .font(.system(.subheadline))
+                        .font(style.fontStyle.configuration.captionFont)
                         .foregroundStyle(style.theme.configuration.secondaryColor)
                         .accessibilityLabel("Quote author: \(author)")
                 }
@@ -350,7 +350,7 @@ struct ListHeaderView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
             Text("\(number)")
-                .font(style.fontStyle.configuration.bodyFont)
+                .font(style.fontStyle.configuration.bodyFont.weight(.semibold))
                 .foregroundStyle(style.theme.configuration.textColor)
                 .multilineTextAlignment(.center)
                 .frame(width: 32, height: 32)
@@ -361,7 +361,7 @@ struct ListHeaderView: View {
                 .accessibilityLabel("Section \(number)")
 
             Text(text)
-                .font(style.fontStyle.configuration.bodyFont.weight(.semibold))
+                .font(style.fontStyle.configuration.headingFont)
                 .foregroundStyle(style.theme.configuration.textColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityLabel("Section title: \(text)")

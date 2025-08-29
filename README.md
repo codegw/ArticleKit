@@ -38,11 +38,7 @@ Or add to `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/codegw/ArticleKit", from: "1.0.0")
-]
-
-targets: [
-    .target(name: "YourTarget", dependencies: ["ArticleKit"])
+    .package(url: "https://github.com/codegw/ArticleKit", from: "0.0.1")
 ]
 ```
 

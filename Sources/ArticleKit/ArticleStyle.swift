@@ -550,7 +550,7 @@ public extension ArticleStyle {
         theme: .dynamic,
         imageStyle: .modern,
         headerImageStyle: .modern,
-        fontStyle: .sansSerif,
+        fontStyle: .expanded,
         authorStyle: .minimal
     )
 
