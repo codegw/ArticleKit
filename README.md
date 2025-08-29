@@ -25,7 +25,9 @@ ArticleKit helps you create clean and customisable article reading experiences i
 - **Accessibility**: Built-in VoiceOver support and accessibility labels
 
 > **ArticleKit is in active development**. 
-> The core architecture and API are stable, but new features and platform support are planned for the future. 
+> The core architecture and API are stable, but new features and platform support are planned for the future.
+
+![ArticleKit Examples](assets/Articles.png)
 
 ## Installation
 
